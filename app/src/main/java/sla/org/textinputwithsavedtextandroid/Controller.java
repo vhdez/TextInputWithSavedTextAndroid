@@ -1,5 +1,6 @@
 package sla.org.textinputwithsavedtextandroid;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class Controller {
     private TextView topLabel;
     private EditText topTextField;
@@ -15,12 +18,30 @@ public class Controller {
     private ListView sideListView;
     private ArrayAdapter<String> arrayAdapter;
 
-    Controller(TextView tv, EditText top, EditText bottom, ListView lv) {
+    private Model model;
+
+    Controller(TextView tv, EditText top, EditText bottom, ListView lv, Context cntxt) {
         topLabel = tv;
         topTextField = top;
         bottomTextField = bottom;
         sideListView = lv;
         arrayAdapter = (ArrayAdapter<String>)sideListView.getAdapter();
+
+        model = new Model(cntxt);
+        // Now that model has been initialized from a file, update View with saved values from Model
+        if (model.getTopLabelText().length() > 0) {
+            topLabel.setText(model.getTopLabelText());
+        }
+        if (model.getTopTextFieldText().length() > 0) {
+            topTextField.setText(model.getTopTextFieldText());
+        }
+        if (model.getBottomTextFieldText().length() > 0) {
+            bottomTextField.setText(model.getBottomTextFieldText());
+        }
+        ArrayList sideListViewTexts = model.getSideListViewTexts();
+        for (int i = 0; i < sideListViewTexts.size(); i++) {
+            arrayAdapter.add((String)sideListViewTexts.get(i));
+        }
 
         topTextField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -46,6 +67,15 @@ public class Controller {
                 bottomTextFieldReady();
             }
         });
+    }
+
+    void save() {
+        System.out.println("Controller save");
+
+        // push the latest GUI text into the model
+        model.setAllData(topLabel.getText().toString(), topTextField.getText().toString(),
+                bottomTextField.getText().toString(), arrayAdapter);
+        model.save();
     }
 
     // these methods are event handler methods that are called when each GUI control is used

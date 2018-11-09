@@ -2,8 +2,6 @@ package sla.org.textinputwithsavedtextandroid;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,6 +25,12 @@ public class TextInputWithSavedText extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
         bottomListView.setAdapter(arrayAdapter);
 
-        controller = new Controller(topText, inputTopText, inputBottomList, bottomListView);
+        controller = new Controller(topText, inputTopText, inputBottomList, bottomListView, getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy() {
+        controller.save();
+        super.onDestroy();
     }
 }
