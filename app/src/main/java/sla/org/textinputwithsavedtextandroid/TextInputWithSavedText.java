@@ -29,8 +29,8 @@ public class TextInputWithSavedText extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         controller.save();
-        super.onDestroy();
+        super.onStop();
     }
 }

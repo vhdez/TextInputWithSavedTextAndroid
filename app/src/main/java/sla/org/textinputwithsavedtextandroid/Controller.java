@@ -27,17 +27,12 @@ public class Controller {
         sideListView = lv;
         arrayAdapter = (ArrayAdapter<String>)sideListView.getAdapter();
 
+        // Read saved text by creating a Model object
         model = new Model(cntxt);
-        // Now that model has been initialized from a file, update View with saved values from Model
-        if (model.getTopLabelText().length() > 0) {
-            topLabel.setText(model.getTopLabelText());
-        }
-        if (model.getTopTextFieldText().length() > 0) {
-            topTextField.setText(model.getTopTextFieldText());
-        }
-        if (model.getBottomTextFieldText().length() > 0) {
-            bottomTextField.setText(model.getBottomTextFieldText());
-        }
+        // Update the GUI's text from via the Model object.
+        topLabel.setText(model.getTopLabelText());
+        topTextField.setText(model.getTopTextFieldText());
+        bottomTextField.setText(model.getBottomTextFieldText());
         ArrayList sideListViewTexts = model.getSideListViewTexts();
         for (int i = 0; i < sideListViewTexts.size(); i++) {
             arrayAdapter.add((String)sideListViewTexts.get(i));
@@ -52,7 +47,6 @@ public class Controller {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 topTextFieldUpdated();
-                topLabel.setText(topTextField.getText());
             }
 
             @Override
@@ -70,30 +64,15 @@ public class Controller {
     }
 
     void save() {
-        System.out.println("Controller save");
-
         // push the latest GUI text into the model
         model.setAllData(topLabel.getText().toString(), topTextField.getText().toString(),
                 bottomTextField.getText().toString(), arrayAdapter);
         model.save();
     }
 
-    // these methods are event handler methods that are called when each GUI control is used
-    public void topTextFieldClear() {
-        System.out.println("topTextFieldClear: " + topTextField.getText());
-
-        // Keep the top label intact but clear the text field
-        topLabel.setText(topTextField.getText());
-        topTextField.setText("");
-    }
-
     public void topTextFieldUpdated() {
-        System.out.println("topTextFieldUpdated: " + topTextField.getText());
-
         // Update the top label when the top text field is updated.
-        if (topTextField.getText().length() > 0) {
-            topLabel.setText(topTextField.getText());
-        }
+        topLabel.setText(topTextField.getText());
     }
 
     public void bottomTextFieldReady() {
@@ -101,5 +80,4 @@ public class Controller {
         arrayAdapter.notifyDataSetChanged();
         bottomTextField.setText("");
     }
-
 }
