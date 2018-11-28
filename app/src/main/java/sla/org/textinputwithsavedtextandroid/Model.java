@@ -12,6 +12,7 @@ public class Model {
     private Context context;
 
     // These fields are the mutable text from the View
+    private Integer currentImgID;
     private String topLabelText;
     private String topTextFieldText;
     private String bottomTextFieldText;
@@ -21,6 +22,7 @@ public class Model {
     Model(Context cntxt) {
         context = cntxt;
 
+        currentImgID = Integer.valueOf(0);
         topLabelText = "";
         topTextFieldText = "";
         bottomTextFieldText = "";
@@ -35,6 +37,10 @@ public class Model {
                 System.out.println("Model() found SavedText.txt");
                 BufferedReader input = new BufferedReader(new FileReader(savedText));
 
+                String currentImg = input.readLine();
+                System.out.println("Model() read currentImg:" + currentImg);
+                currentImgID = Integer.parseInt(currentImg);
+                System.out.println("Model() read currentImgID:" + currentImgID);
                 topLabelText = input.readLine();
                 System.out.println("Model() read topLabelText:" + topLabelText);
                 topTextFieldText = input.readLine();
@@ -72,6 +78,9 @@ public class Model {
             // Write the final model to a saved file
             BufferedWriter writer = new BufferedWriter(new FileWriter(savedText));
             if (writer != null) {
+                System.out.println("Model.save() wrote currentImgID: " + currentImgID);
+                writer.write(currentImgID.toString());
+                writer.newLine();
                 if (topLabelText != null) {
                     System.out.println("Model.save() wrote topLabelText: " + topLabelText);
                     writer.write(topLabelText);
@@ -121,6 +130,8 @@ public class Model {
     }
 
     // getter and setter methods for all of the Model's fields
+    Integer getCurrentImgID() { return currentImgID; }
+
     String getTopLabelText() {
         return topLabelText;
     }
@@ -137,9 +148,10 @@ public class Model {
         return sideListViewTexts;
     }
 
-    void setAllData(String updatedTopLabelText, String updatedTopTextFieldText,
+    void setAllData(Integer currentImg, String updatedTopLabelText, String updatedTopTextFieldText,
                     String updatedBottomTextFieldText, ArrayAdapter<String> listViewItems) {
         // Update the model with all text currently seen in View
+        currentImgID = currentImg;
         topLabelText = updatedTopLabelText;
         topTextFieldText = updatedTopTextFieldText;
         bottomTextFieldText = updatedBottomTextFieldText;
